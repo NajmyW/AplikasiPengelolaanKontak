@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 /**
  *
@@ -222,6 +225,7 @@ public class PengelolaanKontak extends javax.swing.JFrame {
         deleteButton = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -283,6 +287,9 @@ public class PengelolaanKontak extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 phoneFieldKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                phoneFieldKeyTyped(evt);
+            }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -306,7 +313,7 @@ public class PengelolaanKontak extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 28);
         jPanel1.add(searchData, gridBagConstraints);
@@ -332,7 +339,7 @@ public class PengelolaanKontak extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.gridwidth = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = -150;
         gridBagConstraints.insets = new java.awt.Insets(7, 32, 7, 28);
@@ -390,13 +397,26 @@ public class PengelolaanKontak extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Cari Kontak Berdasarkan Nama :");
+        jLabel4.setText("Cari :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
         jPanel1.add(jLabel4, gridBagConstraints);
+
+        jButton1.setText("Simpan (CSV)");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 11, 26);
+        jPanel1.add(jButton1, gridBagConstraints);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -441,6 +461,35 @@ public class PengelolaanKontak extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchDataKeyReleased
 
+    private void saveToCSV() {
+    // Get the current date to append to the file name (optional)
+    String fileName = "contacts_data.csv";
+    
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        // Write the header row
+        writer.write("ID,Name,Phone,Category");
+        writer.newLine();
+
+        // Write data from the table
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            StringBuilder row = new StringBuilder();
+            for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                // Append each cell value followed by a comma, except for the last one
+                row.append(tableModel.getValueAt(i, j));
+                if (j < tableModel.getColumnCount() - 1) {
+                    row.append(",");
+                }
+            }
+            writer.write(row.toString());
+            writer.newLine();
+        }
+        JOptionPane.showMessageDialog(this, "Data saved to " + fileName);
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error saving data to CSV: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+    
 private void filterKeyTyped(java.awt.event.KeyEvent evt) {
     char c = evt.getKeyChar();  // Get the character from the event
     
@@ -478,9 +527,18 @@ private void filterKeyTyped(java.awt.event.KeyEvent evt) {
     }//GEN-LAST:event_phoneFieldKeyReleased
 
     private void phoneFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneFieldActionPerformed
+        
+    }//GEN-LAST:event_phoneFieldActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        saveToCSV();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void phoneFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneFieldKeyTyped
         // TODO add your handling code here:
         filterKeyTyped(evt);
-    }//GEN-LAST:event_phoneFieldActionPerformed
+    }//GEN-LAST:event_phoneFieldKeyTyped
 
     /**
      * @param args the command line arguments
@@ -523,6 +581,7 @@ private void filterKeyTyped(java.awt.event.KeyEvent evt) {
     private javax.swing.JTable contactsTable;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton editButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
